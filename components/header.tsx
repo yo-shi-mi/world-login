@@ -9,6 +9,33 @@ export default function Header() {
   const { data: session, status } = useSession()
   const loading = status === "loading"
 
+  const handleSignIn = async (e: React.MouseEvent) => {
+    e.preventDefault()
+
+    try {
+      const result = await signIn("worldcoin", {
+        redirect: false // 不自動跳轉，我們要處理結果
+      })
+
+      console.log('NextAuth signIn result:', result)
+
+      // 儲存登入結果
+      if (result) {
+        localStorage.setItem('nextAuthSignInResult', JSON.stringify({
+          result,
+          timestamp: new Date().toISOString()
+        }))
+
+        // 成功後跳轉到登入成功頁面
+        if (result.ok) {
+          window.location.href = '/auth-success'
+        }
+      }
+    } catch (error) {
+      console.error('Sign in error:', error)
+    }
+  }
+
   return (
     <header>
       <noscript>
@@ -28,11 +55,7 @@ export default function Header() {
               <a
                 href={`/api/auth/signin`}
                 className={styles.buttonPrimary}
-                onClick={(e) => {
-                  e.preventDefault()
-                  signIn("worldcoin") // when worldcoin is the only provider
-                  // signIn() // when there are multiple providers
-                }}
+                onClick={handleSignIn}
               >
                 Sign in
               </a>
