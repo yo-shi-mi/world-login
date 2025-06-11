@@ -11,6 +11,15 @@ export default function IndexPage() {
       },
       body: JSON.stringify(proof),
     })
+    const responseData = await res.json()
+
+    // 儲存 API 回應到 localStorage
+    localStorage.setItem('verificationResult', JSON.stringify({
+      proof,
+      apiResponse: responseData,
+      timestamp: new Date().toISOString()
+    }))
+
     if (!res.ok) {
       throw new Error("Verification failed."); // IDKit will display the error message to the user in the modal
     }
