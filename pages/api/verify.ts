@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const proof = req.body
-    const app_id = process.env.NEXT_PUBLIC_APP_ID as `app_${string}`
+    const app_id = process.env.NEXT_PUBLIC_WLD_APP_ID as `app_${string}`
     const action = process.env.NEXT_PUBLIC_ACTION_ID || "login"
     const verifyRes = (await verifyCloudProof(proof, app_id, action)) as IVerifyResponse
 
