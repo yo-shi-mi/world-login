@@ -1,5 +1,10 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 
+declare module "next-auth" {
+  interface Session { id_token?: string; profile?: any }
+  interface JWT { id_token?: string; profile?: any }
+}
+
 export const authOptions: NextAuthOptions = {
   providers: [
     {
@@ -26,6 +31,22 @@ export const authOptions: NextAuthOptions = {
       },
     },
   ],
+  callbacks: {
+    async jwt({ token, profile, account }) {
+      if (profile) {
+        token.profile = profile;
+      }
+      if (account) {
+        token.id_token = account.id_token;
+      }
+      return token;
+    },
+    async session({ session, token }: { session: any, token: any }) {
+      session.id_token = token.id_token;
+      session.profile = token.profile;
+      return session;
+    }
+  },
   debug: true,
 };
 
